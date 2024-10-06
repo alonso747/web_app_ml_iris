@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Iris</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>TESTEITO XD</h1>
+        <input type="number" id="sepalLength" placeholder="Longitud del sépalo (cm)" step="0.1" required>
+        <input type="number" id="sepalWidth" placeholder="Ancho del sépalo (cm)" step="0.1" required>
+        <input type="number" id="petalLength" placeholder="Longitud del pétalo (cm)" step="0.1" required>
+        <input type="number" id="petalWidth" placeholder="Ancho del pétalo (cm)" step="0.1" required>
+        <button onclick="makePrediction()">Predecir</button>
+        <button onclick="clearInputs()">Limpiar</button>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        const irisTypes = ['Setosa', 'Versicolor', 'Virginica'];
+
+        async function makePrediction() {
+            const sepalLength = parseFloat(document.getElementById('sepalLength').value);
+            const sepalWidth = parseFloat(document.getElementById('sepalWidth').value);
+            const petalLength = parseFloat(document.getElementById('petalLength').value);
+            const petalWidth = parseFloat(document.getElementById('petalWidth').value);
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sepal_length: sepalLength,
+                    sepal_width: sepalWidth,
+                    petal_length: petalLength,
+                    petal_width: petalWidth
+                })
+            });
+            const result = await response.json();
+            document.getElementById('result').innerText = `Predicción: ${irisTypes[result.prediction]}`;
+        }
+
+        function clearInputs() {
+            document.getElementById('sepalLength').value = '';
+            document.getElementById('sepalWidth').value = '';
+            document.getElementById('petalLength').value = '';
+            document.getElementById('petalWidth').value = '';
+            document.getElementById('result').innerText = '';
+        }
+    </script>
+</body>
+</html>
